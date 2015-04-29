@@ -162,7 +162,7 @@ describe "TextEditorPresenter", ->
           presenter = buildPresenter(contentFrameWidth: 470, baseCharacterWidth: 10)
           expect(presenter.getState().horizontalScrollbar.scrollWidth).toBe 10 * editor.getMaxScreenLineLength() + 1
           expectStateUpdate presenter, -> editor.setSoftWrapped(true)
-          expect(presenter.getState().horizontalScrollbar.scrollWidth).toBe presenter.clientWidth
+          expect(presenter.getState().horizontalScrollbar.scrollWidth).toBe 10 * editor.getMaxScreenLineLength() + 1
           expectStateUpdate presenter, -> editor.setSoftWrapped(false)
           expect(presenter.getState().horizontalScrollbar.scrollWidth).toBe 10 * editor.getMaxScreenLineLength() + 1
 
@@ -484,7 +484,7 @@ describe "TextEditorPresenter", ->
           presenter = buildPresenter(contentFrameWidth: 470, baseCharacterWidth: 10)
           expect(presenter.getState().content.scrollWidth).toBe 10 * editor.getMaxScreenLineLength() + 1
           expectStateUpdate presenter, -> editor.setSoftWrapped(true)
-          expect(presenter.getState().horizontalScrollbar.scrollWidth).toBe presenter.clientWidth
+          expect(presenter.getState().horizontalScrollbar.scrollWidth).toBe 10 * editor.getMaxScreenLineLength() + 1
           expectStateUpdate presenter, -> editor.setSoftWrapped(false)
           expect(presenter.getState().content.scrollWidth).toBe 10 * editor.getMaxScreenLineLength() + 1
 
@@ -496,6 +496,11 @@ describe "TextEditorPresenter", ->
           expectStateUpdate presenter, -> editor.setCursorBufferPosition([editor.getLongestScreenRow(), 0])
           expectStateUpdate presenter, -> editor.insertText('xyz')
 
+          expect(presenter.getState().content.scrollWidth).toBe 10 * editor.getMaxScreenLineLength() + 1
+
+        it "isn't clipped to 0 when the longest line is folded (regression)", ->
+          presenter = buildPresenter(contentFrameWidth: 50, baseCharacterWidth: 10)
+          editor.foldBufferRow(0)
           expect(presenter.getState().content.scrollWidth).toBe 10 * editor.getMaxScreenLineLength() + 1
 
       describe ".scrollTop", ->
